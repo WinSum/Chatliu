@@ -1,7 +1,6 @@
 package com.winsum.chatliu.controller;
 
 import com.winsum.chatliu.mapper.QuestionMapper;
-import com.winsum.chatliu.mapper.UserMapper;
 import com.winsum.chatliu.model.Question;
 import com.winsum.chatliu.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,14 +10,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class PublishController {
-
-    @Autowired
-    private UserMapper userMapper;
 
     @Autowired
     private QuestionMapper questionMapper;
@@ -59,23 +54,7 @@ public class PublishController {
         question.setDescription(description);
         question.setTag(tag);
 
-        User user = null;
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null && cookies.length != 0) //判断cookies非空 执行
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("token")) {
-                    user = userMapper.findUserByToken(cookie.getValue());
-                    if (user != null) {
-                        request.getSession().setAttribute("user", user);
-                    }
-
-                    if (user == null) {
-                        model.addAttribute("error", "用户未登录");
-                        return "publish";
-                    }
-                    break;
-                }
-            }
+        User user = (User) request.getSession().getAttribute("user");
 
         question.setCreator(user.getId());
         question.setGmtCreate(System.currentTimeMillis());

@@ -1,5 +1,8 @@
 package com.winsum.chatliu.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.winsum.chatliu.dto.PageResultDTO;
 import com.winsum.chatliu.dto.QuestionDTO;
 import com.winsum.chatliu.mapper.QuestionMapper;
 import com.winsum.chatliu.mapper.UserMapper;
@@ -22,12 +25,21 @@ public class QuestionService {
     private QuestionMapper questionMapper;
 
 
-    public List<QuestionDTO> list() {
+    public PageResultDTO<QuestionDTO> list(Integer page, Integer size) {
+
+        PageHelper.startPage(page,size);
+
         List<Question> questionList = questionMapper.list();
+
+        //得到分页的结果
+        PageInfo<Question> questionPageInfo = new PageInfo<>(questionList);
+
         List<QuestionDTO> questionDTOList = new ArrayList<>();
-        if (questionList != null && questionList.size() > 0) // list 不为空
+
+
+        if (questionPageInfo.getList() != null && questionPageInfo.getList().size() > 0) // list 不为空
         {
-            for (Question question : questionList) {
+            for (Question question : questionPageInfo.getList()) {
                 User user = userMapper.findById(question.getCreator());
                 QuestionDTO questionDTO = new QuestionDTO();
                 BeanUtils.copyProperties(question, questionDTO);
@@ -36,6 +48,34 @@ public class QuestionService {
             }
         }
 
-        return questionDTOList;
+        return new PageResultDTO<>(questionPageInfo.getTotal(),questionPageInfo.getPages(),
+                questionPageInfo.getPageNum(), questionDTOList);
+    }
+
+    public PageResultDTO<QuestionDTO> listById(Integer id, Integer page, Integer size) {
+        PageHelper.startPage(page,size);
+
+        List<Question> questionList = questionMapper.listById(id);
+
+        //得到分页的结果
+        PageInfo<Question> questionPageInfo = new PageInfo<>(questionList);
+
+        List<QuestionDTO> questionDTOList = new ArrayList<>();
+
+
+        if (questionPageInfo.getList() != null && questionPageInfo.getList().size() > 0) // list 不为空
+        {
+            for (Question question : questionPageInfo.getList()) {
+                User user = userMapper.findById(question.getCreator());
+                QuestionDTO questionDTO = new QuestionDTO();
+                BeanUtils.copyProperties(question, questionDTO);
+                questionDTO.setUser(user);
+                questionDTOList.add(questionDTO);
+            }
+        }
+
+        return new PageResultDTO<>(questionPageInfo.getTotal(),questionPageInfo.getPages(),
+                questionPageInfo.getPageNum(), questionDTOList);
+
     }
 }
