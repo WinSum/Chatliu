@@ -20,4 +20,8 @@ public interface QuestionMapper {
 
     @Select("select * from question where creator = #{id}")
     List<Question> listById(@Param("id") Integer id);
+
+
+    @Select("select * from question where id = #{id}")
+    Question getById(@Param("id") Integer id);
 }
