@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <context id="system" targetRuntime="MyBatis3">
+
+        <!--数据库驱动、链接URL、用户名、密码 -->
+        <jdbcConnection connectionURL="jdbc:h2:~/chatliu"
+                        driverClass="org.h2.Driver"
+                        userId="sa"
+                        password="123">
+        </jdbcConnection>
+
+        <!--
+        默认false，把JDBC DECIMAL 和 NUMERIC 类型解析为 Integer
+            true，把JDBC DECIMAL 和 NUMERIC 类型解析为java.math.BigDecimal
+        -->
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+
+
+        <!--  注意：不能调整标签顺序，规定了xml表标签的解析顺序  -->
+        <!-- 生成PO类的文件配置 -->
+        <javaModelGenerator targetProject="src/main/java"
+                            targetPackage="com.winsum.chatliu.model">
+            <property name="enableSubPackages" value="true"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+
+        <!-- 生成mapper.xml文件配置 -->
+        <sqlMapGenerator targetProject="src/main/resources"
+                         targetPackage="mapper">
+        </sqlMapGenerator>
+
+        <!-- 生成Mapper.java类配置 -->
+        <javaClientGenerator targetProject="src/main/java" type="XMLMAPPER"
+                             targetPackage="com.winsum.chatliu.mapper">
+
+        </javaClientGenerator>
+
+
+        <!--  tableName对应数据库中表明，domainObjectName对应生成的po类名  -->
+        <!-- enableInsert 、 enableSelectByPrimaryKey等配置的作用，是否生成相应的mapper方法和xml中的sql-->
+        <table tableName="user" domainObjectName="User"/>
+        <table tableName="question" domainObjectName="Question"/>
+
+    </context>
+</generatorConfiguration>

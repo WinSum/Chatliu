@@ -18,4 +18,6 @@ spring:
 
 mybatis:
   configuration:
-    map-underscore-to-camel-case: true
+    map-underscore-to-camel-case: true #驼峰
+  type-aliases-package: com.winsum.chatliu.model #pojo位置
+  mapper-locations: classpath:mapper/*Mapper.xml #mapper.xml位置

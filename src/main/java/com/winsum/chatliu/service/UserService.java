@@ -3,9 +3,11 @@ package com.winsum.chatliu.service;
 import com.winsum.chatliu.dto.GithubUser;
 import com.winsum.chatliu.mapper.UserMapper;
 import com.winsum.chatliu.model.User;
+import com.winsum.chatliu.model.UserExample;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -16,9 +18,12 @@ public class UserService {
 
     public String CreateOrUpdate(GithubUser githubUser){
 
-        User dbuser = userMapper.findUserById(String.valueOf(githubUser.getId()));
+        UserExample userExample = new UserExample();
+        userExample.createCriteria().andAccountIdEqualTo(String.valueOf(githubUser.getId()));
+        List<User> users = userMapper.selectByExample(userExample);
         String token = UUID.randomUUID().toString();
-        if (dbuser == null){
+
+        if (users.size() == 0){
             //插入
             User user = new User();
             user.setName(githubUser.getName());
@@ -29,12 +34,16 @@ public class UserService {
             user.setAvatarUrl(githubUser.getAvatarUrl());
             userMapper.insert(user);
         }else{
+            User user = users.get(0);
             //更新
-            dbuser.setToken(token);
-            dbuser.setAvatarUrl(githubUser.getAvatarUrl());
-            dbuser.setName(githubUser.getName());
-            dbuser.setGmtModified(System.currentTimeMillis());
-            userMapper.updateUser(dbuser);
+            user.setToken(token);
+            user.setAvatarUrl(githubUser.getAvatarUrl());
+            user.setName(githubUser.getName());
+            user.setGmtModified(System.currentTimeMillis());
+
+            UserExample example = new UserExample();
+            example.createCriteria().andIdEqualTo(user.getId());
+            userMapper.updateByExampleSelective(user,example);
         }
         return token;
     }

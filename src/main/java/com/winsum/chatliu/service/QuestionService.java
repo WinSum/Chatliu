@@ -7,6 +7,7 @@ import com.winsum.chatliu.dto.QuestionDTO;
 import com.winsum.chatliu.mapper.QuestionMapper;
 import com.winsum.chatliu.mapper.UserMapper;
 import com.winsum.chatliu.model.Question;
+import com.winsum.chatliu.model.QuestionExample;
 import com.winsum.chatliu.model.User;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class QuestionService {
 
         PageHelper.startPage(page,size);
 
-        List<Question> questionList = questionMapper.list();
+        List<Question> questionList = questionMapper.selectByExample(new QuestionExample());
 
         //得到分页的结果
         PageInfo<Question> questionPageInfo = new PageInfo<>(questionList);
@@ -40,7 +41,7 @@ public class QuestionService {
         if (questionPageInfo.getList() != null && questionPageInfo.getList().size() > 0) // list 不为空
         {
             for (Question question : questionPageInfo.getList()) {
-                User user = userMapper.findById(question.getCreator());
+                User user = userMapper.selectByPrimaryKey(question.getCreator());
                 QuestionDTO questionDTO = new QuestionDTO();
                 BeanUtils.copyProperties(question, questionDTO);
                 questionDTO.setUser(user);
@@ -55,7 +56,9 @@ public class QuestionService {
     public PageResultDTO<QuestionDTO> listById(Integer id, Integer page, Integer size) {
         PageHelper.startPage(page,size);
 
-        List<Question> questionList = questionMapper.listById(id);
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.createCriteria().andCreatorEqualTo(id);
+        List<Question> questionList = questionMapper.selectByExample(questionExample);
 
         //得到分页的结果
         PageInfo<Question> questionPageInfo = new PageInfo<>(questionList);
@@ -66,7 +69,7 @@ public class QuestionService {
         if (questionPageInfo.getList() != null && questionPageInfo.getList().size() > 0) // list 不为空
         {
             for (Question question : questionPageInfo.getList()) {
-                User user = userMapper.findById(question.getCreator());
+                User user = userMapper.selectByPrimaryKey(question.getCreator());
                 QuestionDTO questionDTO = new QuestionDTO();
                 BeanUtils.copyProperties(question, questionDTO);
                 questionDTO.setUser(user);
@@ -80,10 +83,10 @@ public class QuestionService {
     }
 
     public QuestionDTO getById(Integer id) {
-        Question question = questionMapper.getById(id);
+        Question question = questionMapper.selectByPrimaryKey(id);
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(question,questionDTO);
-        User user = userMapper.findById(question.getCreator());
+        User user = userMapper.selectByPrimaryKey(question.getCreator());
         questionDTO.setUser(user);
         return questionDTO;
     }
@@ -94,11 +97,13 @@ public class QuestionService {
             //创建
             question.setGmtCreate(System.currentTimeMillis());
             question.setGmtModified(question.getGmtCreate());
-            questionMapper.create(question);
+            questionMapper.insert(question);
         }else {
             //更新question
             question.setGmtModified(System.currentTimeMillis());
-            questionMapper.update(question);
+            QuestionExample questionExample = new QuestionExample();
+            questionExample.createCriteria().andIdEqualTo(question.getId());
+            questionMapper.updateByExampleSelective(question,questionExample);
         }
     }
 }
