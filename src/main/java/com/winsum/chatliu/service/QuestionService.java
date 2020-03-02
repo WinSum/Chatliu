@@ -104,6 +104,9 @@ public class QuestionService {
         if (question.getId() == null) {
             //如果id为null
             //创建
+            question.setLikeCount(0);
+            question.setViewCount(0);
+            question.setCommentCount(0);
             question.setGmtCreate(System.currentTimeMillis());
             question.setGmtModified(question.getGmtCreate());
             questionMapper.insert(question);

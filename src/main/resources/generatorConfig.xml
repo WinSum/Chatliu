@@ -46,6 +46,7 @@
         <!-- enableInsert 、 enableSelectByPrimaryKey等配置的作用，是否生成相应的mapper方法和xml中的sql-->
         <table tableName="user" domainObjectName="User"/>
         <table tableName="question" domainObjectName="Question"/>
+        <table tableName="comment" domainObjectName="Comment"/>
 
     </context>
 </generatorConfiguration>

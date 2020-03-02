@@ -1,7 +1,8 @@
-## ChatLiu
+# ChatLiu
 
 ## API
 [Github OAuth](https://developer.github.com/apps/building-oauth-apps/)
+
 
 ## 技术
 [Spring](https://spring.io/guides)
@@ -23,3 +24,9 @@
 4. 查看个人问题/最新回复(分页+拦截器)
 
 5. 查看详细问题/编辑问题
+
+### 脚本
+```
+mvn flyway:migrate
+mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate
+```
