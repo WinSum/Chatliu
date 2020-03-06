@@ -17,8 +17,13 @@ public class ResultDTO {
         return resultDTO;
     }
 
-    public static ResultDTO errorOf(CustomizeErrorCode noLogin){
-        return errorOf(noLogin.getCode(),noLogin.getMessage());
+    public static ResultDTO errorOf(CustomizeException e){
+        return errorOf(e.getCode(),e.getMessage());
+    }
+
+
+    public static ResultDTO errorOf(CustomizeErrorCode errorCode) {
+        return errorOf(errorCode.getCode(), errorCode.getMessage());
     }
 
     public static ResultDTO okOf(){

@@ -13,8 +13,8 @@ body{
 }
 
 .media-object{
-    height: 42px;
-    width: 42px;
+    height: 40px;
+    width: 40px;
 }
 
 .text-desc{
@@ -26,4 +26,19 @@ body{
 .chatliu-menu{
     color: #999;
     font-size: 13px;
+}
+
+.menu{
+    color: #999;
+    margin-top: 5px;
+}
+
+.menu .icon{
+    margin-right: 6px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.menu .icon:hover{
+    color: #2aabd2;
 }

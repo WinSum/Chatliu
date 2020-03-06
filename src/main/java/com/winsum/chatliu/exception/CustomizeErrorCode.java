@@ -12,7 +12,8 @@ public enum CustomizeErrorCode implements ICustomizeErrorCode {
     NO_LOGIN(2003,"当前操作需要登录，请登录后重试"),
     SYSTEM_ERROR(2004,"服务器异常"),
     TYPE_PARAM_WRONG(2005,"评论类型错误"),
-    COMMENT_NOT_FOUND(2006,"您回复的评论已消失")
+    COMMENT_NOT_FOUND(2006,"您回复的评论已消失"),
+    COMMENT_NOT_NULL(2007,"评论不能为空")
     ;
 
     @Override
