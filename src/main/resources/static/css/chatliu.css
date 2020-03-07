@@ -46,3 +46,10 @@ body{
 .menucolor{
     color: #2aabd2;
 }
+
+
+/*垂直居中*/
+.chuizhicenter{
+    display: inline-block;
+    vertical-align: middle;
+}

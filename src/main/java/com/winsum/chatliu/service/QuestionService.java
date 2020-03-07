@@ -12,12 +12,15 @@ import com.winsum.chatliu.mapper.UserMapper;
 import com.winsum.chatliu.model.Question;
 import com.winsum.chatliu.model.QuestionExample;
 import com.winsum.chatliu.model.User;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
@@ -35,8 +38,9 @@ public class QuestionService {
     public PageResultDTO<QuestionDTO> list(Integer page, Integer size) {
 
         PageHelper.startPage(page, size);
-
-        List<Question> questionList = questionMapper.selectByExample(new QuestionExample());
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.setOrderByClause("gmt_create desc");
+        List<Question> questionList = questionMapper.selectByExample(questionExample);
 
         //得到分页的结果
         PageInfo<Question> questionPageInfo = new PageInfo<>(questionList);
@@ -128,5 +132,26 @@ public class QuestionService {
         question.setId(id);
         question.setViewCount(1);
         questionExtMapper.incView(question);
+    }
+
+
+    public List<QuestionDTO> selectRelated(QuestionDTO questionDTO) {
+        if (StringUtils.isBlank(questionDTO.getTag())){
+            return new ArrayList<>();
+        }
+        String[] tags = StringUtils.split(questionDTO.getTag(), ",");
+        String regTag = Arrays.stream(tags).collect(Collectors.joining("|"));
+        Question question = new Question();
+        question.setId(questionDTO.getId());
+        question.setTag(regTag);
+        List<Question> questions = questionExtMapper.selectRelated(question);
+
+        //转换成questionDTO
+        List<QuestionDTO> questionDTOS = questions.stream().map(q -> {
+            QuestionDTO dto = new QuestionDTO();
+            BeanUtils.copyProperties(q,dto);
+            return dto;
+        }).collect(Collectors.toList());
+        return questionDTOS;
     }
 }
