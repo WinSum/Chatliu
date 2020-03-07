@@ -2,6 +2,7 @@ package com.winsum.chatliu.controller;
 
 import com.winsum.chatliu.dto.CommentDTO;
 import com.winsum.chatliu.dto.QuestionDTO;
+import com.winsum.chatliu.enums.CommentTypeEnum;
 import com.winsum.chatliu.service.CommentService;
 import com.winsum.chatliu.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class QuestionController {
                            Model model){
         QuestionDTO questionDTO = questionService.getById(id);
 
-        List<CommentDTO> comments = commentService.listByQuestionId(id);
+        List<CommentDTO> comments = commentService.listbByTargetId(id, CommentTypeEnum.QUESTION.getType());
 
         //累加阅读数
         questionService.incView(id);

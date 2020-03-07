@@ -122,6 +122,8 @@
                 </dependencies>
             </plugin>
 
+
+            <!--MBG逆向工程-->
             <plugin>
                 <groupId>org.mybatis.generator</groupId>
                 <artifactId>mybatis-generator-maven-plugin</artifactId>

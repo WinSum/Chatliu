@@ -6,6 +6,8 @@ import lombok.Data;
 @Data
 public class CommentDTO {
 
+    private Integer commentCount;
+
     private Long id;
 
     private Long parentId;

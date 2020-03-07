@@ -4,10 +4,7 @@ import com.winsum.chatliu.dto.CommentDTO;
 import com.winsum.chatliu.enums.CommentTypeEnum;
 import com.winsum.chatliu.exception.CustomizeErrorCode;
 import com.winsum.chatliu.exception.CustomizeException;
-import com.winsum.chatliu.mapper.CommentMapper;
-import com.winsum.chatliu.mapper.QuestionExtMapper;
-import com.winsum.chatliu.mapper.QuestionMapper;
-import com.winsum.chatliu.mapper.UserMapper;
+import com.winsum.chatliu.mapper.*;
 import com.winsum.chatliu.model.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,10 +32,14 @@ public class CommentService {
     @Autowired
     private UserMapper userMapper;
 
-    public List<CommentDTO> listByQuestionId(Integer id) {
+    @Autowired
+    private CommentExtMapper commentExtMapper;
+
+    public List<CommentDTO> listbByTargetId(Integer id, Integer type) {
         CommentExample commentExample = new CommentExample();
-        commentExample.createCriteria().andParentIdEqualTo(id.longValue())
-                .andTypeEqualTo(CommentTypeEnum.QUESTION.getType());
+        commentExample.createCriteria()
+                .andParentIdEqualTo(id.longValue())
+                .andTypeEqualTo(type);
         commentExample.setOrderByClause("gmt_create desc");
         List<Comment> comments = commentMapper.selectByExample(commentExample);
         if (comments.size() == 0){
@@ -85,6 +86,8 @@ public class CommentService {
                 throw new CustomizeException(CustomizeErrorCode.COMMENT_NOT_FOUND);
             }
             commentMapper.insert(comment);
+            dbcomment.setCommentCount(1);
+            commentExtMapper.incCommentCount(dbcomment);
         }else{
             //回复问题
             Question question = questionMapper.selectByPrimaryKey(comment.getParentId().intValue());

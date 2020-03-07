@@ -1,8 +1,16 @@
-
+/**
+ * 提交问题回复
+ */
 function post() {
     var questionId = $("#question_id").val();
     var content = $("#comment_content").val();
+    comment2target(questionId,2,content);
+}
 
+
+
+
+function comment2target(targetId,type,content) {
     if (!content){
         alert("不能回复空内容");
         return;
@@ -13,9 +21,9 @@ function post() {
         url:"/comment",
         contentType:"application/json",
         data:JSON.stringify({
-            "parentId":questionId,
+            "parentId":targetId,
             "content":content,
-            "type":2
+            "type":type
         }),
         success:function (response) {
             if (response.code == 200){
@@ -36,3 +44,69 @@ function post() {
         dataType:"json"
     });
 }
+
+/**
+ * 提交评论回复
+ * @param commentId
+ */
+function comment(e) {
+    var commentId = e.getAttribute("data-id");
+    var content = $("#input-"+commentId).val();
+    comment2target(commentId,1,content)
+
+}
+
+
+
+/**
+ * 展开二级评论
+ */
+
+function collspseComments(e) {
+
+    var id = e.getAttribute("data-id");
+    var comment_id = $("#comment-"+id);
+
+    //切换二级评论
+    comment_id.toggleClass("in");
+    var iconcomment = $("#iconcomment-"+id);
+    iconcomment.toggleClass("menucolor")
+
+    var subCommentContainer = $("#comment-" + id);
+
+    if (comment_id.hasClass("in")){
+        $.getJSON("/comment/" + id, function (data) {
+            console.log(data);
+            $.each(data.data.reverse(), function (index, comment) {
+                var mediaLeftElement = $("<div/>", {
+                    "class": "media-left"
+                }).append($("<img/>", {
+                    "class": "media-object img-rounded",
+                    "src": comment.user.avatarUrl
+                }));
+
+                var mediaBodyElement = $("<div/>", {
+                    "class": "media-body"
+                }).append($("<h6/>", {
+                    "class": "media-heading",
+                    "html": comment.user.name
+                })).append($("<div/>", {
+                    "html": comment.content
+                })).append($("<div/>", {
+                    "class": "menu"
+                }).append($("<span/>", {
+                    "html": moment(comment.gmtCreate).format('YYYY-MM-DD')
+                })));
+
+                var mediaElement = $("<div/>", {
+                    "class": "media",
+                    "style":"margin-bottom: 10px;border-bottom: 1px solid #eee"
+                }).append(mediaLeftElement).append(mediaBodyElement);
+
+                subCommentContainer.prepend(mediaElement);
+            });
+        })
+    }
+}
+
+
