@@ -1,5 +1,6 @@
 package com.winsum.chatliu.controller;
 
+import com.winsum.chatliu.cache.TagCache;
 import com.winsum.chatliu.dto.QuestionDTO;
 import com.winsum.chatliu.model.Question;
 import com.winsum.chatliu.model.User;
@@ -21,7 +22,8 @@ public class PublishController {
     private QuestionService questionService;
 
     @GetMapping("/publish")
-    public String publish() {
+    public String publish(Model model) {
+        model.addAttribute("tags", TagCache.get());
         return "publish";
     }
 
@@ -33,6 +35,7 @@ public class PublishController {
         model.addAttribute("description",question.getDescription());
         model.addAttribute("tag",question.getTag());
         model.addAttribute("id",id);
+        model.addAttribute("tags", TagCache.get());
         return "publish";
     }
 
@@ -49,6 +52,7 @@ public class PublishController {
         model.addAttribute("title", title);
         model.addAttribute("description", description);
         model.addAttribute("tag", tag);
+        model.addAttribute("tags", TagCache.get());
 
         if (title == null || title == ""){
             model.addAttribute("error","标题不能为空");
@@ -72,7 +76,7 @@ public class PublishController {
 
         question.setCreator(user.getId());
         questionService.createOrupdate(question);
-
         return "redirect:/";
     }
+
 }

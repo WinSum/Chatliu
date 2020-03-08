@@ -45,7 +45,7 @@
             <hr>
             <a th:if="${session.user!= null && question.creator == session.user.id}"
                th:href="@{/publish/{id}(id = ${question.id})}" class="chatliu-menu">
-                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>编辑
+                <span class="glyphicon glyphicon-edit" aria-hidden="true">编辑</span>
             </a>
 
             <!--评论-->

@@ -30,9 +30,17 @@
                 </div>
                 <div class="media-body">
                     <h4 class="media-heading" th:text="${question.title}"></h4>
-                    <span class="text-desc"><span th:text="${question.commentCount}"></span>个回复 •
-                        <span th:text="${question.viewCount}"></span> 次浏览 • <span
-                                th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd HH:mm')}"></span></span>
+
+                    <!--头部显示-->
+                    <span class="text-desc">
+                        <span th:text="${question.commentCount}"></span>个回复 •
+                        <span th:text="${question.viewCount}"></span> 次浏览 •
+                        <span th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd HH:mm')}"></span> •
+                        <a th:if="${session.user!= null && question.creator == session.user.id}"
+                           th:href="@{/publish/{id}(id = ${question.id})}" class="chatliu-menu">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true">编辑</span>
+                        </a>
+                    </span>
                 </div>
             </div>
             <nav aria-label="...">
@@ -83,7 +91,8 @@
 
                         <li>
                             <a th:if="${pageResultlist.pageNum}<${pageResultlist.totalPage}"
-                               th:href="@{/profile/{section}/(section = ${section},page=${pageResultlist.pageNum}+1)}" aria-label="Next">
+                               th:href="@{/profile/{section}/(section = ${section},page=${pageResultlist.pageNum}+1)}"
+                               aria-label="Next">
                                 Newer<span aria-hidden="true">&rarr;</span>
                             </a>
                         </li>
@@ -95,7 +104,7 @@
             <div class="list-group" style="margin-top: 15px;">
                 <a href="/profile/questions"
                    th:class="${section == 'questions'}?'active list-group-item':'list-group-item'">
-                    我的问题<span class="badge">14</span></a>
+                    我的问题<span class="badge" th:text="${pageResultlist.total}"></span></a>
                 <a href="/profile/replies"
                    th:class="${section == 'replies'}?'active list-group-item':'list-group-item'">
                     最新回复<span class="badge">14</span></a>
