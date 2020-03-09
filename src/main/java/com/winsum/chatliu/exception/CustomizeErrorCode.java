@@ -6,6 +6,7 @@ package com.winsum.chatliu.exception;
  */
 public enum CustomizeErrorCode implements ICustomizeErrorCode {
 
+    GITHUB_CONNECT_FAIL(1000,"github fail"),
     QUESTION_NOT_OK(2000,"问题提交失败"),
     QUESTION_NOT_FOUND(2001,"你找的问题不存在了，要不要换个试试？"),
     TARGET_PARAM_NOT_FOUND(2002,"未找到评论"),
@@ -13,8 +14,10 @@ public enum CustomizeErrorCode implements ICustomizeErrorCode {
     SYSTEM_ERROR(2004,"服务器异常"),
     TYPE_PARAM_WRONG(2005,"评论类型错误"),
     COMMENT_NOT_FOUND(2006,"您回复的评论已消失"),
-    COMMENT_NOT_NULL(2007,"评论不能为空")
-    ;
+    COMMENT_NOT_NULL(2007,"评论不能为空"),
+    READ_NOTIFICATION_FAIL(2008,"你读取的是别人的信息"),
+    NOTIFICATION_NOT_FOUND(2010,"通知已消失");
+
 
     @Override
     public Integer getCode() {

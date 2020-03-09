@@ -53,7 +53,7 @@
             </div>
 
             <nav aria-label="...">
-                <nav aria-label="Page navigation" style="float: right">
+                <nav aria-label="Page navigation" style="float: right" th:if="${pageResultlist.totalPage != 0}">
                     <ul class="pagination pager">
                         <li>
                             <a th:if="${pageResultlist.pageNum}>1" th:href="@{/(page=${pageResultlist.pageNum}-1)}"

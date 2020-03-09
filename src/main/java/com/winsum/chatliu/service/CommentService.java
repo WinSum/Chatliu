@@ -2,6 +2,8 @@ package com.winsum.chatliu.service;
 
 import com.winsum.chatliu.dto.CommentDTO;
 import com.winsum.chatliu.enums.CommentTypeEnum;
+import com.winsum.chatliu.enums.NotificationStatusEnum;
+import com.winsum.chatliu.enums.NotificationTypeEnum;
 import com.winsum.chatliu.exception.CustomizeErrorCode;
 import com.winsum.chatliu.exception.CustomizeException;
 import com.winsum.chatliu.mapper.*;
@@ -34,6 +36,9 @@ public class CommentService {
 
     @Autowired
     private CommentExtMapper commentExtMapper;
+
+    @Autowired
+    private NotificationMapper notificationMapper;
 
     public List<CommentDTO> listbByTargetId(Integer id, Integer type) {
         CommentExample commentExample = new CommentExample();
@@ -70,7 +75,7 @@ public class CommentService {
     }
 
     @Transactional
-    public void insert(Comment comment) {
+    public void insert(Comment comment, User commentor) {
         if (comment.getParentId() == null || comment.getParentId() == 0){
             throw new CustomizeException(CustomizeErrorCode.TARGET_PARAM_NOT_FOUND);
         }
@@ -88,6 +93,10 @@ public class CommentService {
             commentMapper.insert(comment);
             dbcomment.setCommentCount(1);
             commentExtMapper.incCommentCount(dbcomment);
+
+            int type = NotificationTypeEnum.REPLAY_COMMENT.getType();
+            //创建通知 notificaiton
+            CreateNofify(comment, dbcomment.getCommentator().longValue(),type,commentor.getName(),dbcomment.getContent());
         }else{
             //回复问题
             Question question = questionMapper.selectByPrimaryKey(comment.getParentId().intValue());
@@ -97,6 +106,39 @@ public class CommentService {
             commentMapper.insert(comment);
             question.setCommentCount(1);
             questionExtMapper.incCommentCount(question);
+            int type = NotificationTypeEnum.REPLAY_QUESTION.getType();
+            CreateNofify(comment,question.getCreator().longValue(),type,commentor.getName(),question.getTitle());
         }
     }
+
+    /**
+     * 创建通知
+     * @param comment
+     * @param receiver
+     */
+    private void CreateNofify(Comment comment, Long receiver,Integer type ,String notificaterName,String title) {
+        Notification notification = new Notification();
+        notification.setGmtCreate(System.currentTimeMillis());
+        notification.setType(type);
+        notification.setOuterid(comment.getParentId());
+        notification.setNotifier(comment.getCommentator().longValue());
+        notification.setStatus(NotificationStatusEnum.UNREAD.getStatus());
+        notification.setReceiver(receiver);
+        notification.setNotifierName(notificaterName);
+        notification.setOuterTitle(title);
+        notificationMapper.insert(notification);
+    }
+
+    /**
+     * 查询上级parentId
+     * @param outerid
+     * @return
+     */
+    public Comment selectById(Long outerid) {
+        Comment comment = commentMapper.selectByPrimaryKey(outerid);
+        return comment;
+    }
+
+
+
 }

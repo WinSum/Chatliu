@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.winsum.chatliu.dto.PageResultDTO;
 import com.winsum.chatliu.dto.QuestionDTO;
+import com.winsum.chatliu.dto.ResultDTO;
 import com.winsum.chatliu.exception.CustomizeErrorCode;
 import com.winsum.chatliu.exception.CustomizeException;
 import com.winsum.chatliu.mapper.QuestionExtMapper;
@@ -40,27 +41,9 @@ public class QuestionService {
         PageHelper.startPage(page, size);
         QuestionExample questionExample = new QuestionExample();
         questionExample.setOrderByClause("gmt_create desc");
-        List<Question> questionList = questionMapper.selectByExample(questionExample);
 
-        //得到分页的结果
-        PageInfo<Question> questionPageInfo = new PageInfo<>(questionList);
-
-        List<QuestionDTO> questionDTOList = new ArrayList<>();
-
-
-        if (questionPageInfo.getList() != null && questionPageInfo.getList().size() > 0) // list 不为空
-        {
-            for (Question question : questionPageInfo.getList()) {
-                User user = userMapper.selectByPrimaryKey(question.getCreator());
-                QuestionDTO questionDTO = new QuestionDTO();
-                BeanUtils.copyProperties(question, questionDTO);
-                questionDTO.setUser(user);
-                questionDTOList.add(questionDTO);
-            }
-        }
-
-        return new PageResultDTO<>(questionPageInfo.getTotal(), questionPageInfo.getPages(),
-                questionPageInfo.getPageNum(), questionDTOList);
+        PageResultDTO<QuestionDTO> questionDTOPageResultDTO = getquestionPage(questionExample);
+        return questionDTOPageResultDTO;
     }
 
     public PageResultDTO<QuestionDTO> listById(Integer id, Integer page, Integer size) {
@@ -68,28 +51,9 @@ public class QuestionService {
 
         QuestionExample questionExample = new QuestionExample();
         questionExample.createCriteria().andCreatorEqualTo(id);
-        List<Question> questionList = questionMapper.selectByExample(questionExample);
 
-        //得到分页的结果
-        PageInfo<Question> questionPageInfo = new PageInfo<>(questionList);
-
-        List<QuestionDTO> questionDTOList = new ArrayList<>();
-
-
-        if (questionPageInfo.getList() != null && questionPageInfo.getList().size() > 0) // list 不为空
-        {
-            for (Question question : questionPageInfo.getList()) {
-                User user = userMapper.selectByPrimaryKey(question.getCreator());
-                QuestionDTO questionDTO = new QuestionDTO();
-                BeanUtils.copyProperties(question, questionDTO);
-                questionDTO.setUser(user);
-                questionDTOList.add(questionDTO);
-            }
-        }
-
-        return new PageResultDTO<>(questionPageInfo.getTotal(), questionPageInfo.getPages(),
-                questionPageInfo.getPageNum(), questionDTOList);
-
+        PageResultDTO<QuestionDTO> questionDTOPageResultDTO = getquestionPage(questionExample);
+        return questionDTOPageResultDTO;
     }
 
     public QuestionDTO getById(Integer id) {
@@ -153,5 +117,35 @@ public class QuestionService {
             return dto;
         }).collect(Collectors.toList());
         return questionDTOS;
+    }
+
+
+    /**
+     * 返回page问题方法
+     * @param questionExample
+     * @return
+     */
+    public PageResultDTO<QuestionDTO> getquestionPage(QuestionExample questionExample){
+        List<Question> questionList = questionMapper.selectByExample(questionExample);
+
+        //得到分页的结果
+        PageInfo<Question> questionPageInfo = new PageInfo<>(questionList);
+
+        List<QuestionDTO> questionDTOList = new ArrayList<>();
+
+
+        if (questionPageInfo.getList() != null && questionPageInfo.getList().size() > 0) // list 不为空
+        {
+            for (Question question : questionPageInfo.getList()) {
+                User user = userMapper.selectByPrimaryKey(question.getCreator());
+                QuestionDTO questionDTO = new QuestionDTO();
+                BeanUtils.copyProperties(question, questionDTO);
+                questionDTO.setUser(user);
+                questionDTOList.add(questionDTO);
+            }
+        }
+
+        return new PageResultDTO<>(questionPageInfo.getTotal(), questionPageInfo.getPages(),
+                questionPageInfo.getPageNum(), questionDTOList);
     }
 }

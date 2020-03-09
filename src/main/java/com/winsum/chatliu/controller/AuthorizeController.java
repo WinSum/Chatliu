@@ -52,8 +52,8 @@ public class AuthorizeController {
             return "redirect:/";
         }else
         {
-            //登录失败
-            return "redirect:/";
+            //登录失败,继续请求
+            return "redirect:/callback";
         }
 
     }

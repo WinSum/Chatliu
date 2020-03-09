@@ -3,6 +3,8 @@ package com.winsum.chatliu.provider;
 import com.alibaba.fastjson.JSON;
 import com.winsum.chatliu.dto.AccessTokenDTO;
 import com.winsum.chatliu.dto.GithubUser;
+import com.winsum.chatliu.exception.CustomizeErrorCode;
+import com.winsum.chatliu.exception.CustomizeException;
 import okhttp3.*;
 import org.springframework.stereotype.Component;
 
