@@ -7,12 +7,16 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="/css/chatliu.css">
+    <link rel="stylesheet" href="/css/editormd.preview.min.css">
 
     <!--引入js-->
     <script src="/js/jquery-3.4.1.min.js"></script>
     <script src="/js/chatliu.js"></script>
     <script src="/js/moment.js"></script>
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+    <script src="/js/editormd.min.js" type="application/javascript"></script>
+    <script src="/js/lib/marked.min.js"></script>
+    <script src="/js/lib/prettify.min.js"></script>
 
 </head>
 <body>
@@ -32,7 +36,17 @@
 
             <!--问题描述-->
             <hr>
-            <div th:text="${question.description}" style="margin-left: 20px"></div>
+            <div id="question-view">
+                <textarea style="display:none;" th:text="${question.description}"></textarea>
+            </div>
+            <script type="text/javascript">
+                $(function () {
+                    editormd.markdownToHTML("question-view", {
+                        emoji:true,
+                        tex: true   //开启tex计算公式
+                    });
+                });
+            </script>
 
             <!--标签-->
             <hr>
@@ -110,16 +124,16 @@
 
             <!--回复输入-->
             <h4 style="margin-top: 30px;">提交回复</h4>
-            <div id="comment_section" th:if="${session.user!= null}">
+            <div id="comment_section">
                 <div class="media">
                     <div class="media-left">
                         <a href="#">
-                            <img class="media-object img-rounded" th:src="${session.user.avatarUrl}">
+                            <img class="media-object img-rounded" th:src="${session.user != null ? session.user.avatarUrl:'/images/default.png'}">
                         </a>
                     </div>
                     <div class="media-body" style="padding-top: 10px">
                         <h5 class="media-heading">
-                            <span th:text="${session.user.name}"></span>
+                            <span th:text="${session.user != null ? session.user.name:'匿名用户'}"></span>
                         </h5>
                     </div>
                 </div>
@@ -151,7 +165,7 @@
                 <div>
                     <hr>
                     <h4>持续关注</h4>
-                    <img src="/image/chatliu.png" class="img-thumbnail">
+                    <img src="/images/chatliu.png" class="img-thumbnail">
                 </div>
                 <!--相关问题-->
                 <div>

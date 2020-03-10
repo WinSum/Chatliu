@@ -3,6 +3,7 @@
 ## API
 [Github OAuth](https://developer.github.com/apps/building-oauth-apps/)
 
+[tencent COS]()
 
 ## 技术
 [Spring](https://spring.io/guides)
@@ -12,6 +13,8 @@
 [BootStrap](https://v3.bootcss.com/components/)
 
 [Mybatis MGB](http://mybatis.org/generator/running/runningWithMaven.html)
+
+[Thymeleaf](https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html)
 
 ## 功能
 

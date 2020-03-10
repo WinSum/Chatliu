@@ -117,6 +117,9 @@ public class CommentService {
      * @param receiver
      */
     private void CreateNofify(Comment comment, Long receiver,Integer type ,String notificaterName,String title) {
+        if (receiver == comment.getCommentator().longValue()){
+            return;
+        }
         Notification notification = new Notification();
         notification.setGmtCreate(System.currentTimeMillis());
         notification.setType(type);
