@@ -22,13 +22,13 @@ import java.util.Random;
 public class TencentCOS {
 
     // 此处填写的存储桶名称
-    private static final String bucketName = "chatliu-1301398569";
+    private static final String bucketName = "";
     // secretId
-    private static final String secretId = "AKIDwmRxIVETL1VnyzwV2MXVIvOfkiU6Znur";
+    private static final String secretId = "";
     // secretKey
-    private static final String secretKey = "ueHalkYDh2BDxVt9UfeR7Temw57wa64u";
+    private static final String secretKey = "";
     //path
-    private static final String path = "https://chatliu-1301398569.cos.ap-shanghai.myqcloud.com/";
+    private static final String path = "";
 
     // 1 初始化用户身份信息(secretId, secretKey，可在腾讯云后台中的API密钥管理中查看！
     private static COSCredentials cred = new BasicCOSCredentials(secretId, secretKey);
